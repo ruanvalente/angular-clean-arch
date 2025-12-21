@@ -1,59 +1,53 @@
-# AngularCleanArch
+Este `README.md` detalha a implementação da **Arquitetura Limpa (Clean Architecture)** no projeto Angular, estruturada para garantir escalabilidade, testabilidade e independência de frameworks ou APIs externas.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.7.
+---
 
-## Development server
+# Task Manager - Clean Architecture (Angular Moderno)
 
-To start a local development server, run:
+Este projeto utiliza os princípios da Arquitetura Limpa para separar as regras de negócio da infraestrutura técnica e da interface do usuário.
 
-```bash
-ng serve
-```
+## Estrutura de Pastas e Responsabilidades
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 1. `core/` (Camada de Domínio)
 
-## Code scaffolding
+O coração da aplicação. Esta camada é pura e não deve depender de nada do Angular (exceto para injeção de dependência via tokens).
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **`models/`**: Define as entidades de negócio (interfaces). Ex: `task.model.ts`.
+- **`repositories/`**: Contém as classes abstratas (contratos) que definem como os dados devem ser manipulados, sem implementar a lógica de acesso a dados.
+- **`use-cases/`**: Implementa as regras de negócio da aplicação. Cada arquivo representa uma única ação do usuário (ex: `get-all-tasks.usecase.ts`), orquestrando o fluxo de dados entre o domínio e os repositórios.
 
-```bash
-ng generate component component-name
-```
+### 2. `data/` (Camada de Infraestrutura)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Responsável por implementar os detalhes técnicos.
 
-```bash
-ng generate --help
-```
+- **`repositories/`**: Contém as implementações reais dos contratos definidos no `core`. Aqui vive o `task-api.repository.ts`, que utiliza o `HttpClient` para se comunicar com APIs externas. Se mudarmos para Firebase ou LocalStorage, apenas esta pasta é afetada.
 
-## Building
+### 3. `presentation/` (Camada de Interface)
 
-To build the project run:
+Onde o framework Angular vive. É dividida para separar a lógica de visualização da lógica de orquestração.
 
-```bash
-ng build
-```
+- **`pages/`**: Componentes de alto nível que representam telas completas (ex: `tasks-page`). Eles organizam o layout e agregam os widgets.
+- **`tasks/ui/`**: **Dumb Components**. Componentes puramente visuais (ex: `task-item.component.ts`) que recebem dados via `@Input` e emitem eventos via `@Output`. Não possuem lógica de negócio.
+- **`tasks/widgets/`**: **Smart Components**. Componentes que injetam os `UseCases`, gerenciam o estado (Signals) e coordenam os componentes de UI. Eles são os "cérebros" de partes específicas da tela.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### 4. `shared/` (Recursos Globais)
 
-## Running unit tests
+- **`ui/`**: Componentes reutilizáveis em toda a aplicação que não pertencem a um domínio específico, como `header.component.ts` ou `footer.component.ts`.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### 5. Configurações e Ambiente
 
-```bash
-ng test
-```
+- **`app.config.ts`**: Onde a Inversão de Dependência acontece. Mapeamos o `TaskRepository` (Contrato) para o `TaskApiRepository` (Implementação).
+- **`environments/`**: Armazena variáveis específicas de ambiente, como a `baseUrl` da API.
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## Fluxo de Dados (Exemplo: Toggle Task)
 
-```bash
-ng e2e
-```
+1. O Usuário clica no checkbox no `task-item.component.ts` (**UI**).
+2. O componente de UI emite um evento para o `task-list-widget.component.ts` (**Widget**).
+3. O Widget chama o método `execute()` do `toggle-task.usecase.ts` (**UseCase**).
+4. O UseCase chama o repositório através da interface `TaskRepository`.
+5. O Angular injeta a implementação `TaskApiRepository` (**Data**) que realiza a chamada HTTP.
+6. A resposta volta pelo mesmo caminho, atualizando o `Signal` no Widget e refletindo na UI.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
