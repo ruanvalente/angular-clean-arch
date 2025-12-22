@@ -6,13 +6,12 @@ import { StorageRepository } from '../../core/repositories/storage.repository';
 export class LocalStorageInfrastructureRepository extends StorageRepository {
   private readonly STORAGE_KEY = 'app_tasks';
 
-  private tasksSignal = signal<Task[]>([]);
+  private tasksSignal: WritableSignal<Task[]>;
 
   constructor() {
     super();
-    if (typeof window !== 'undefined' && localStorage) {
-      this.tasksSignal.set(this.loadFromDisk());
-    }
+    const initialTasks = this.loadFromDisk();
+    this.tasksSignal = signal<Task[]>(initialTasks);
   }
 
   getTasksSignal(): WritableSignal<Task[]> {
@@ -20,10 +19,14 @@ export class LocalStorageInfrastructureRepository extends StorageRepository {
   }
 
   save(tasks: Task[]): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tasks));
-    }
     this.tasksSignal.set(tasks);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        window.localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tasks));
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
+      }
+    }
   }
 
   clear(): void {
@@ -35,7 +38,12 @@ export class LocalStorageInfrastructureRepository extends StorageRepository {
 
   private loadFromDisk(): Task[] {
     if (typeof window === 'undefined' || !window.localStorage) return [];
-    const data = window.localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    try {
+      const data = window.localStorage.getItem(this.STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+      return [];
+    }
   }
 }

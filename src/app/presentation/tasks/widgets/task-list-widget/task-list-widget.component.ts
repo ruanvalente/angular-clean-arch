@@ -23,10 +23,38 @@ export class TaskListWidgetComponent implements OnInit {
   }
 
   private loadTasks() {
-    this.syncTaskUseCase.execute().subscribe()
+    const current = this.storage.getTasksSignal()();
+    const isOnline = typeof window !== 'undefined' && navigator.onLine;
+
+    if (current && current.length > 0) {
+
+      if (isOnline) {
+        setTimeout(() => {
+          this.syncTaskUseCase.execute().subscribe({
+            next: () => console.log('Background sync completed'),
+            error: (err) => console.warn('Background sync failed:', err)
+          });
+        }, 500);
+      }
+      return;
+    }
+
+    if (isOnline) {
+      console.log('No local tasks, fetching from API');
+      this.syncTaskUseCase.execute().subscribe({
+        next: () => console.log('Initial tasks loaded from API'),
+        error: (err) => console.error('Initial load error:', err)
+      });
+    } else {
+      console.log('Offline and no local tasks');
+    }
   }
 
   handleToggle(id: string) {
-    this.toggleTaskUseCase.execute(id).subscribe()
+    console.log('Toggle task:', id);
+    this.toggleTaskUseCase.execute(id).subscribe({
+      next: () => console.log('Task toggled successfully:', id),
+      error: (err) => console.error('Toggle error:', err)
+    });
   }
 }
