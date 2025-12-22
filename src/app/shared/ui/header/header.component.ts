@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  template: `<header><h1>Task Manager</h1></header>`,
+  templateUrl: './header.component.html',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  title = input<string>('Task Manager');
+}
