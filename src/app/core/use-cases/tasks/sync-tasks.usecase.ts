@@ -10,7 +10,19 @@ export class SyncTasksUseCase {
 
   execute() {
     return this.api.getAll().pipe(
-      tap(tasks => this.storage.save(tasks))
+      tap(apiTasks => {
+        const localTasks = this.storage.getTasksSignal()();
+
+        const mergedTasks = apiTasks.map(apiTask => {
+          const localTask = localTasks.find(t => t.id === apiTask.id);
+          if (localTask) {
+            return { ...apiTask, completed: localTask.completed };
+          }
+          return apiTask;
+        });
+
+        this.storage.save(mergedTasks);
+      })
     );
   }
 }
