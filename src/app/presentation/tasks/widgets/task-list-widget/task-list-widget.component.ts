@@ -45,8 +45,6 @@ export class TaskListWidgetComponent implements OnInit {
         next: () => console.log('Initial tasks loaded from API'),
         error: (err) => console.error('Initial load error:', err)
       });
-    } else {
-      console.log('Offline and no local tasks');
     }
   }
 
