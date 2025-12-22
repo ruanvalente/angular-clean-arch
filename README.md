@@ -49,7 +49,7 @@ Onde o framework Angular vive. É dividida para separar a lógica de visualizaç
 2. O componente de UI emite um evento para o `task-list-widget.component.ts` (**Widget**).
 3. O Widget chama o método `execute()` do `toggle-task.usecase.ts` (**UseCase**).
 4. O UseCase chama o repositório através da interface `TaskRepository`.
-5. O Angular injeta a implementação `TaskApiRepository` (**Data**) que realiza a chamada HTTP.
+5. O Angular injeta a implementação `TaskApiRepository` (**Infrastructure**) que realiza a chamada HTTP.
 6. A resposta volta pelo mesmo caminho, atualizando o `Signal` no Widget e refletindo na UI.
 
 ---
