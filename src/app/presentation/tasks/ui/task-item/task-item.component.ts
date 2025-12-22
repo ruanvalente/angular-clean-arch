@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Task } from '../../../../core/models/task.model';
 
 @Component({
@@ -7,6 +7,10 @@ import { Task } from '../../../../core/models/task.model';
   templateUrl: './task-item.component.html',
 })
 export class TaskItemComponent {
-  @Input({ required: true }) task!: Task;
-  @Output() onCheck = new EventEmitter<string>();
+  task = input.required<Task>();
+  onCheck = output<string>();
+
+  handleToggle() {
+   this.onCheck.emit(this.task().id);
+  }
 }

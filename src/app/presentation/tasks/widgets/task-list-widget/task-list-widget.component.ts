@@ -40,7 +40,6 @@ export class TaskListWidgetComponent implements OnInit {
     }
 
     if (isOnline) {
-      console.log('No local tasks, fetching from API');
       this.syncTaskUseCase.execute().subscribe({
         next: () => console.log('Initial tasks loaded from API'),
         error: (err) => console.error('Initial load error:', err)
@@ -49,7 +48,6 @@ export class TaskListWidgetComponent implements OnInit {
   }
 
   handleToggle(id: string) {
-    console.log('Toggle task:', id);
     this.toggleTaskUseCase.execute(id).subscribe({
       next: () => console.log('Task toggled successfully:', id),
       error: (err) => console.error('Toggle error:', err)

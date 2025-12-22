@@ -26,7 +26,7 @@ export class ToggleTaskUseCase {
       return of(updatedTask);
     }
 
-    return this.api.toggle(id).pipe(
+    return this.api.toggle(id, updatedTask.completed).pipe(
       tap(apiUpdatedTask => {
         const curr = this.storage.getTasksSignal()();
         const syncedList = curr.map(t => (t.id === id ? apiUpdatedTask : t));

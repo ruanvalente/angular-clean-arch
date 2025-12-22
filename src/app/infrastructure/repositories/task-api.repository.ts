@@ -12,9 +12,9 @@ export class TaskApiInfrastructureRepository implements TaskRepository {
   getAll() {
     return this.http.get<Task[]>(`${this.baseUrl}`);
   }
-  toggle(id: string) {
+  toggle(id: string, completed: boolean) {
     return this.http.patch<Task>(`${this.baseUrl}/${id}`, {
-      completed: true,
+      completed: completed,
     });
   }
 }
