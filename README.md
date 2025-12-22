@@ -1,5 +1,7 @@
 Este `README.md` detalha a implementação da **Arquitetura Limpa (Clean Architecture)** no projeto Angular, estruturada para garantir escalabilidade, testabilidade e independência de frameworks ou APIs externas.
 
+![alt text](image.png)
+
 ---
 
 # Task Manager - Clean Architecture (Angular Moderno)
