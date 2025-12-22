@@ -9,8 +9,8 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { TaskRepository } from './core/repositories/task.repository';
-import { TaskApiRepository } from './data/repositories/task-api.repository';
-import { LocalStorageRepository } from './data/repositories/local-storage.repository';
+import { TaskApiInfrastructureRepository } from './infrastructure/repositories/task-api.repository';
+import { LocalStorageInfrastructureRepository } from './infrastructure/repositories/local-storage.repository';
 import { StorageRepository } from './core/repositories/storage.repository';
 
 export const appConfig: ApplicationConfig = {
@@ -22,11 +22,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     {
       provide: TaskRepository,
-      useClass: TaskApiRepository,
+      useClass: TaskApiInfrastructureRepository,
     },
     {
       provide: StorageRepository,
-      useClass: LocalStorageRepository,
+      useClass: LocalStorageInfrastructureRepository,
     },
   ],
 };

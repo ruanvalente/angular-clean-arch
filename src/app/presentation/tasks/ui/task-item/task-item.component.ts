@@ -4,11 +4,7 @@ import { Task } from '../../../../core/models/task.model';
 @Component({
   selector: 'app-task-item',
   standalone: true,
-  template: `
-    <div (click)="onCheck.emit(task.id)">
-      <input type="checkbox" [checked]="task.completed" /> {{ task.title }}
-    </div>
-  `,
+  templateUrl: './task-item.component.html',
 })
 export class TaskItemComponent {
   @Input({ required: true }) task!: Task;

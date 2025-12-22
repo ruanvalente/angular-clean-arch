@@ -5,7 +5,7 @@ import { TaskRepository } from '../../core/repositories/task.repository';
 import { environment } from '../../../environments/environments';
 
 @Injectable({ providedIn: 'root' })
-export class TaskApiRepository implements TaskRepository {
+export class TaskApiInfrastructureRepository implements TaskRepository {
   private http = inject(HttpClient);
   private readonly baseUrl = environment.app.baseURL;
 

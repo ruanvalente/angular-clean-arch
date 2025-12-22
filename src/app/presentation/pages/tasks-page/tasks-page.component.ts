@@ -6,12 +6,6 @@ import { TaskListWidgetComponent } from '../../tasks/widgets/task-list-widget/ta
   selector: 'app-tasks-page',
   standalone: true,
   imports: [TaskListWidgetComponent, HeaderComponent],
-  template: `
-    <app-header />
-    <main>
-      <h2>Minhas Tarefas</h2>
-      <app-task-list-widget />
-    </main>
-  `,
+  templateUrl: './task-page.component.html'
 })
 export class TasksPageComponent {}

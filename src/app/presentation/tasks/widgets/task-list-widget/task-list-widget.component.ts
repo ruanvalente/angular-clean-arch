@@ -1,40 +1,32 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
-import { Task } from '../../../../core/models/task.model';
+import { Component, inject, OnInit } from '@angular/core';
 import { TaskItemComponent } from '../../ui/task-item/task-item.component';
-import { GetAllTasksUseCase } from '../../../../core/use-cases/tasks/get-all-tasks.usecase';
 import { ToggleTaskUseCase } from '../../../../core/use-cases/tasks/toggle-task.usecase';
 import { SyncTasksUseCase } from '../../../../core/use-cases/tasks/sync-tasks.usecase';
+import { StorageRepository } from '../../../../core/repositories/storage.repository';
 
 @Component({
   selector: 'app-task-list-widget',
   standalone: true,
   imports: [TaskItemComponent, CommonModule],
-  template: `
-    @for (task of tasks(); track task.id) {
-    <app-task-item [task]="task" (onCheck)="handleToggle($event)" />
-    }
-  `,
+  templateUrl: './task-list-widget.component.html',
 })
-export class TaskListWidgetComponent {
+export class TaskListWidgetComponent implements OnInit {
   private toggleTaskUseCase = inject(ToggleTaskUseCase);
   private syncTaskUseCase = inject(SyncTasksUseCase);
+  private storage = inject(StorageRepository);
 
-  tasks = signal<Task[]>([]);
+  tasks = this.storage.getTasksSignal();
 
-  constructor() {
+  ngOnInit() {
     this.loadTasks();
   }
 
   private loadTasks() {
-    this.syncTaskUseCase.execute();
+    this.syncTaskUseCase.execute().subscribe()
   }
 
   handleToggle(id: string) {
-    this.toggleTaskUseCase.execute(id).subscribe(() => {
-      this.tasks.update((old) =>
-        old.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
-      );
-    });
+    this.toggleTaskUseCase.execute(id).subscribe()
   }
 }

@@ -16,7 +16,7 @@ O coração da aplicação. Esta camada é pura e não deve depender de nada do 
 - **`repositories/`**: Contém as classes abstratas (contratos) que definem como os dados devem ser manipulados, sem implementar a lógica de acesso a dados.
 - **`use-cases/`**: Implementa as regras de negócio da aplicação. Cada arquivo representa uma única ação do usuário (ex: `get-all-tasks.usecase.ts`), orquestrando o fluxo de dados entre o domínio e os repositórios.
 
-### 2. `data/` (Camada de Infraestrutura)
+### 2. `infrastructure/` (Camada de Infraestrutura)
 
 Responsável por implementar os detalhes técnicos.
 
