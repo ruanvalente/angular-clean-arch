@@ -1,6 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { Task } from '../../core/models/task.model';
-import { StorageRepository } from '../../core/repositories/storage.repository';
+import { Task } from '@/core/models/task.model';
+import { StorageRepository } from '@/core/repositories/storage.repository';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageInfrastructureRepository extends StorageRepository {

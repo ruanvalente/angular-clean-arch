@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { tap } from 'rxjs';
-import { TaskRepository } from '../../repositories/task.repository';
-import { StorageRepository } from '../../repositories/storage.repository';
+import { TaskRepository } from '@/core/repositories/task.repository';
+import { StorageRepository } from '@/core/repositories/storage.repository';
 
 @Injectable({ providedIn: 'root' })
 export class SyncTasksUseCase {
@@ -10,11 +10,11 @@ export class SyncTasksUseCase {
 
   execute() {
     return this.api.getAll().pipe(
-      tap(apiTasks => {
+      tap((apiTasks) => {
         const localTasks = this.storage.getTasksSignal()();
 
-        const mergedTasks = apiTasks.map(apiTask => {
-          const localTask = localTasks.find(t => t.id === apiTask.id);
+        const mergedTasks = apiTasks.map((apiTask) => {
+          const localTask = localTasks.find((t) => t.id === apiTask.id);
           if (localTask) {
             return { ...apiTask, completed: localTask.completed };
           }

@@ -1,9 +1,9 @@
+import { StorageRepository } from '@/core/repositories/storage.repository';
+import { SyncTasksUseCase } from '@/core/use-cases/tasks/sync-tasks.usecase';
+import { ToggleTaskUseCase } from '@/core/use-cases/tasks/toggle-task.usecase';
+import { TaskItemComponent } from '@/presentation/tasks/ui/task-item/task-item.component';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { TaskItemComponent } from '../../ui/task-item/task-item.component';
-import { ToggleTaskUseCase } from '../../../../core/use-cases/tasks/toggle-task.usecase';
-import { SyncTasksUseCase } from '../../../../core/use-cases/tasks/sync-tasks.usecase';
-import { StorageRepository } from '../../../../core/repositories/storage.repository';
 
 @Component({
   selector: 'app-task-list-widget',
@@ -27,12 +27,11 @@ export class TaskListWidgetComponent implements OnInit {
     const isOnline = typeof window !== 'undefined' && navigator.onLine;
 
     if (current && current.length > 0) {
-
       if (isOnline) {
         setTimeout(() => {
           this.syncTaskUseCase.execute().subscribe({
             next: () => console.log('Background sync completed'),
-            error: (err) => console.warn('Background sync failed:', err)
+            error: (err) => console.warn('Background sync failed:', err),
           });
         }, 500);
       }
@@ -42,7 +41,7 @@ export class TaskListWidgetComponent implements OnInit {
     if (isOnline) {
       this.syncTaskUseCase.execute().subscribe({
         next: () => console.log('Initial tasks loaded from API'),
-        error: (err) => console.error('Initial load error:', err)
+        error: (err) => console.error('Initial load error:', err),
       });
     }
   }
@@ -50,7 +49,7 @@ export class TaskListWidgetComponent implements OnInit {
   handleToggle(id: string) {
     this.toggleTaskUseCase.execute(id).subscribe({
       next: () => console.log('Task toggled successfully:', id),
-      error: (err) => console.error('Toggle error:', err)
+      error: (err) => console.error('Toggle error:', err),
     });
   }
 }

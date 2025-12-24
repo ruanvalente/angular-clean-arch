@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Task } from '../../../../core/models/task.model';
+import { Task } from '@/core/models/task.model';
 
 @Component({
   selector: 'app-task-item',
@@ -11,6 +11,6 @@ export class TaskItemComponent {
   onCheck = output<string>();
 
   handleToggle() {
-   this.onCheck.emit(this.task().id);
+    this.onCheck.emit(this.task().id);
   }
 }

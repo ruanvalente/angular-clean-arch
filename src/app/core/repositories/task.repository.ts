@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Task } from '../models/task.model';
+import { Task } from '@/core/models/task.model';
 
 export abstract class TaskRepository {
   abstract getAll(): Observable<Task[]>;

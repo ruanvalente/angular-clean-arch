@@ -1,8 +1,8 @@
+import { Task } from '@/core/models/task.model';
+import { TaskRepository } from '@/core/repositories/task.repository';
+import { environment } from '@/environments/environments';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Task } from '../../core/models/task.model';
-import { TaskRepository } from '../../core/repositories/task.repository';
-import { environment } from '../../../environments/environments';
 
 @Injectable({ providedIn: 'root' })
 export class TaskApiInfrastructureRepository implements TaskRepository {
