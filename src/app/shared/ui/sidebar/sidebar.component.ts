@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { StorageRepository } from '@/core/repositories/storage.repository';
 import { SidebarNavItemComponent } from './sidebar-nav-item/sidebar-nav-item.component';
 
 @Component({
@@ -10,14 +11,30 @@ import { SidebarNavItemComponent } from './sidebar-nav-item/sidebar-nav-item.com
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
-  isOpen = signal<boolean>(true);
+  private readonly SIDEBAR_KEY = 'sidebarOpen';
+  private readonly storageRepository = inject(StorageRepository);
+
+  isOpen = signal<boolean>(this.getSidebarStateFromStorage());
 
   navItems = [
-    { label: 'Tarefas', icon: '✓', route: '/tasks' },
-    { label: 'Configurações', icon: '⚙', route: '/settings' },
+    { label: 'Tarefas', icon: '✓', route: 'tasks' },
+    { label: 'Configurações', icon: '⚙', route: 'settings' },
+    { label: 'Teste', icon: '🧪', route: 'test' },
   ];
+
+  constructor() {
+    effect(() => {
+      const isOpenState = this.isOpen();
+      this.storageRepository.setItem<boolean>(this.SIDEBAR_KEY, isOpenState);
+    });
+  }
 
   toggleSidebar() {
     this.isOpen.update((value) => !value);
+  }
+
+  private getSidebarStateFromStorage(): boolean {
+    const stored = this.storageRepository.getItem<boolean>(this.SIDEBAR_KEY);
+    return stored === null ? true : stored;
   }
 }

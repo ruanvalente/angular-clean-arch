@@ -1,9 +1,12 @@
+import { Task } from '@/core/models/task.model';
 import { StorageRepository } from '@/core/repositories/storage.repository';
 import { SyncTasksUseCase } from '@/core/use-cases/tasks/sync-tasks.usecase';
 import { ToggleTaskUseCase } from '@/core/use-cases/tasks/toggle-task.usecase';
 import { PaginationComponent } from '@/shared/ui/pagination/pagination.component';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
+
+const TASKS_STORAGE_KEY = 'app_tasks';
 
 @Component({
   selector: 'app-task-list-widget',
@@ -16,21 +19,36 @@ export class TaskListWidgetComponent implements OnInit {
   private syncTaskUseCase = inject(SyncTasksUseCase);
   private storage = inject(StorageRepository);
 
-  tasks = this.storage.getTasksSignal();
+  tasks = signal<Task[]>(this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || []);
+
+  constructor() {
+    // Watch for storage changes and update signal
+    effect(() => {
+      const stored = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY);
+      if (stored) {
+        this.tasks.set(stored);
+      }
+    });
+  }
 
   ngOnInit() {
     this.loadTasks();
   }
 
   private loadTasks() {
-    const current = this.storage.getTasksSignal()();
+    const current = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
     const isOnline = typeof window !== 'undefined' && navigator.onLine;
 
     if (current && current.length > 0) {
       if (isOnline) {
         setTimeout(() => {
           this.syncTaskUseCase.execute().subscribe({
-            next: () => console.log('Background sync completed'),
+            next: () => {
+              // Refresh tasks from storage after sync
+              const updated = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
+              this.tasks.set(updated);
+              console.log('Background sync completed');
+            },
             error: (err) => console.warn('Background sync failed:', err),
           });
         }, 500);
@@ -40,7 +58,12 @@ export class TaskListWidgetComponent implements OnInit {
 
     if (isOnline) {
       this.syncTaskUseCase.execute().subscribe({
-        next: () => console.log('Initial tasks loaded from API'),
+        next: () => {
+          // Refresh tasks from storage after initial load
+          const updated = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
+          this.tasks.set(updated);
+          console.log('Initial tasks loaded from API');
+        },
         error: (err) => console.error('Initial load error:', err),
       });
     }
@@ -48,7 +71,12 @@ export class TaskListWidgetComponent implements OnInit {
 
   handleToggle(id: string) {
     this.toggleTaskUseCase.execute(id).subscribe({
-      next: () => console.log('Task toggled successfully:', id),
+      next: () => {
+        // Refresh tasks from storage after toggle
+        const updated = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
+        this.tasks.set(updated);
+        console.log('Task toggled successfully:', id);
+      },
       error: (err) => console.error('Toggle error:', err),
     });
   }
