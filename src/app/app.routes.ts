@@ -41,16 +41,12 @@ export const routes: Routes = [
             (m) => m.TestPageComponent
           ),
       },
-      {
-        path: '',
-        redirectTo: 'tasks',
-        pathMatch: 'full',
-      },
+
     ],
   },
   {
     path: '',
-    redirectTo: 'tasks',
+    redirectTo: 'dashboard/tasks',
     pathMatch: 'full',
   },
 ];
