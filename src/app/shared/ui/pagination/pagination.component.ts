@@ -1,5 +1,7 @@
-import { Component, input, output, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, computed, effect, input, output, signal } from '@angular/core';
+
+import { Task } from '@/core/models/task.model';
 import { TaskItemComponent } from '@/presentation/tasks/ui/task-item/task-item.component';
 
 @Component({
@@ -9,12 +11,10 @@ import { TaskItemComponent } from '@/presentation/tasks/ui/task-item/task-item.c
   templateUrl: './pagination.component.html',
 })
 export class PaginationComponent {
-  items = input.required<any[]>();
-  itemsPerPage = input<number>(5);
+  items = input.required<Array<Task>>();
+  itemsPerPage = input<number>(10);
   currentPage = output<number>();
   onToggle = output<string>();
-
-  protected Math = Math;
 
   currentPageSignal = signal<number>(1);
   totalPages = computed(() => {
@@ -33,6 +33,14 @@ export class PaginationComponent {
     const start = (page - 1) * perPage;
     const end = start + perPage;
     return items.slice(start, end);
+  });
+
+  firstItemIndex = computed(() => {
+    return (this.currentPageSignal() - 1) * this.itemsPerPage() + 1;
+  });
+
+  lastItemIndex = computed(() => {
+    return Math.min(this.currentPageSignal() * this.itemsPerPage(), this.items().length);
   });
 
   constructor() {
@@ -81,7 +89,7 @@ export class PaginationComponent {
     if (startPage > 1) {
       pages.push(1);
       if (startPage > 2) {
-        pages.push(-1); // -1 representa "..."
+        pages.push(-1);
       }
     }
 
@@ -91,7 +99,7 @@ export class PaginationComponent {
 
     if (endPage < total) {
       if (endPage < total - 1) {
-        pages.push(-1); // -1 representa "..."
+        pages.push(-1);
       }
       pages.push(total);
     }

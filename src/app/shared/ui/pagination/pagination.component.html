@@ -12,17 +12,14 @@
   @if (totalPages() > 1) {
   <div class="flex items-center justify-between pt-6 border-t border-gray-200">
     <div class="text-sm text-gray-600">
-      <span class="font-semibold">{{ (currentPageSignal() - 1) * itemsPerPage() + 1 }}</span>
+      <span class="font-semibold">{{ firstItemIndex() }}</span>
       -
-      <span class="font-semibold">{{
-        Math.min(currentPageSignal() * itemsPerPage(), items().length)
-      }}</span>
+      <span class="font-semibold">{{ lastItemIndex() }}</span>
       de
       <span class="font-semibold">{{ items().length }}</span>
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- Botão Anterior -->
       <button
         (click)="previousPage()"
         [disabled]="!canGoPrevious"
@@ -31,7 +28,6 @@
         Preview
       </button>
 
-      <!-- Números de páginas -->
       <div class="flex gap-1">
         @for (page of getPageNumbers(); track page) { @if (page === -1) {
         <span class="px-3 py-2 text-gray-400">...</span>
@@ -49,7 +45,6 @@
         } }
       </div>
 
-      <!-- Botão Próximo -->
       <button
         (click)="nextPage()"
         [disabled]="!canGoNext"
