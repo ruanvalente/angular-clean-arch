@@ -1,49 +1,39 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
-import { Task } from '@/core/models/task.model';
+import { Injectable } from '@angular/core';
 import { StorageRepository } from '@/core/repositories/storage.repository';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageInfrastructureRepository extends StorageRepository {
-  private readonly STORAGE_KEY = 'app_tasks';
-
-  private tasksSignal: WritableSignal<Task[]>;
-
-  constructor() {
-    super();
-    const initialTasks = this.loadFromDisk();
-    this.tasksSignal = signal<Task[]>(initialTasks);
+  getItem<T>(key: string): T | null {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return null;
+    }
+    try {
+      const data = window.localStorage.getItem(key);
+      return data ? (JSON.parse(data) as T) : null;
+    } catch (error) {
+      console.error(`Error reading item '${key}' from localStorage:`, error);
+      return null;
+    }
   }
 
-  getTasksSignal(): WritableSignal<Task[]> {
-    return this.tasksSignal;
+  setItem<T>(key: string, value: T): void {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Error writing item '${key}' to localStorage:`, error);
+    }
   }
 
-  save(tasks: Task[]): void {
-    this.tasksSignal.set(tasks);
+  removeItem(key: string): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        window.localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tasks));
+        window.localStorage.removeItem(key);
       } catch (error) {
-        console.error('Error saving to localStorage:', error);
+        console.error(`Error removing item '${key}' from localStorage:`, error);
       }
-    }
-  }
-
-  clear(): void {
-    if (typeof window !== 'undefined' && localStorage) {
-      localStorage.removeItem(this.STORAGE_KEY);
-    }
-    this.tasksSignal.set([]);
-  }
-
-  private loadFromDisk(): Task[] {
-    if (typeof window === 'undefined' || !window.localStorage) return [];
-    try {
-      const data = window.localStorage.getItem(this.STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
-    } catch (error) {
-      console.error('Error loading from localStorage:', error);
-      return [];
     }
   }
 }
