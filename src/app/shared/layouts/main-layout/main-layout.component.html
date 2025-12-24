@@ -1,0 +1,13 @@
+<div class="flex h-screen bg-gray-50">
+  <app-sidebar />
+
+  <div class="flex-1 flex flex-col">
+    <app-header [title]="'Task Manager'" />
+
+    <main class="flex-1 overflow-auto py-8 px-4">
+      <div class="max-w-7xl mx-auto">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

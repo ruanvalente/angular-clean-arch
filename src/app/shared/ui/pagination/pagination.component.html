@@ -1,0 +1,58 @@
+<div class="space-y-4">
+  <div class="space-y-3">
+    @if (paginatedItems().length === 0) {
+    <div class="text-center py-8">
+      <p class="text-gray-400">Nenhum item para exibir</p>
+    </div>
+    } @else { @for (item of paginatedItems(); track item.id) {
+    <app-task-item [task]="item" (onCheck)="handleToggle($event)" />
+    } }
+  </div>
+
+  @if (totalPages() > 1) {
+  <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+    <div class="text-sm text-gray-600">
+      <span class="font-semibold">{{ firstItemIndex() }}</span>
+      -
+      <span class="font-semibold">{{ lastItemIndex() }}</span>
+      de
+      <span class="font-semibold">{{ items().length }}</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        (click)="previousPage()"
+        [disabled]="!canGoPrevious"
+        class="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        Preview
+      </button>
+
+      <div class="flex gap-1">
+        @for (page of getPageNumbers(); track page) { @if (page === -1) {
+        <span class="px-3 py-2 text-gray-400">...</span>
+        } @else {
+        <button
+          (click)="goToPage(page)"
+          [class.bg-blue-500]="page === currentPageSignal()"
+          [class.text-white]="page === currentPageSignal()"
+          [class.text-gray-700]="page !== currentPageSignal()"
+          [class.hover:bg-gray-100]="page !== currentPageSignal()"
+          class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center font-medium transition-colors duration-200"
+        >
+          {{ page }}
+        </button>
+        } }
+      </div>
+
+      <button
+        (click)="nextPage()"
+        [disabled]="!canGoNext"
+        class="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+  }
+</div>

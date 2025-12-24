@@ -1,7 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { of, tap } from 'rxjs';
+import { Task } from '@/core/models/task.model';
 import { StorageRepository } from '@/core/repositories/storage.repository';
 import { TaskRepository } from '@/core/repositories/task.repository';
+
+const TASKS_STORAGE_KEY = 'app_tasks';
 
 @Injectable({ providedIn: 'root' })
 export class ToggleTaskUseCase {
@@ -9,7 +12,7 @@ export class ToggleTaskUseCase {
   private storage = inject(StorageRepository);
 
   execute(id: string) {
-    const currentTasks = this.storage.getTasksSignal()();
+    const currentTasks = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
     const existing = currentTasks.find((t) => t.id === id);
 
     if (!existing) {
@@ -18,7 +21,7 @@ export class ToggleTaskUseCase {
 
     const updatedTask = { ...existing, completed: !existing.completed };
     const newList = currentTasks.map((t) => (t.id === id ? updatedTask : t));
-    this.storage.save(newList);
+    this.storage.setItem<Task[]>(TASKS_STORAGE_KEY, newList);
 
     const isOnline = typeof window !== 'undefined' && navigator.onLine;
 
@@ -28,9 +31,9 @@ export class ToggleTaskUseCase {
 
     return this.api.toggle(id, updatedTask.completed).pipe(
       tap((apiUpdatedTask) => {
-        const curr = this.storage.getTasksSignal()();
+        const curr = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
         const syncedList = curr.map((t) => (t.id === id ? apiUpdatedTask : t));
-        this.storage.save(syncedList);
+        this.storage.setItem<Task[]>(TASKS_STORAGE_KEY, syncedList);
       })
     );
   }

@@ -1,8 +1,5 @@
-import { WritableSignal } from '@angular/core';
-import { Task } from '@/core/models/task.model';
-
 export abstract class StorageRepository {
-  abstract getTasksSignal(): WritableSignal<Task[]>;
-  abstract save(tasks: Task[]): void;
-  abstract clear(): void;
+  abstract getItem<T>(key: string): T | null;
+  abstract setItem<T>(key: string, value: T): void;
+  abstract removeItem(key: string): void;
 }
