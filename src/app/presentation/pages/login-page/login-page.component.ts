@@ -27,16 +27,13 @@ export class LoginPageComponent {
 
     this.isLoading.set(true);
 
-    // Simular chamada à API
     setTimeout(() => {
       this.isLoading.set(false);
-      // Redirecionar para tarefas após login bem-sucedido
       this.router.navigate(['/tasks']);
     }, 1000);
   }
 
   handleSignup() {
-    // Aqui você pode redirecionar para página de cadastro ou abrir um modal
     alert('Funcionalidade de cadastro será implementada');
   }
 }
