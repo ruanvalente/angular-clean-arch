@@ -1,14 +1,14 @@
 import { StorageRepository } from '@/core/repositories/storage.repository';
 import { SyncTasksUseCase } from '@/core/use-cases/tasks/sync-tasks.usecase';
 import { ToggleTaskUseCase } from '@/core/use-cases/tasks/toggle-task.usecase';
-import { TaskItemComponent } from '@/presentation/tasks/ui/task-item/task-item.component';
+import { PaginationComponent } from '@/shared/ui/pagination/pagination.component';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
 @Component({
   selector: 'app-task-list-widget',
   standalone: true,
-  imports: [TaskItemComponent, CommonModule],
+  imports: [CommonModule, PaginationComponent],
   templateUrl: './task-list-widget.component.html',
 })
 export class TaskListWidgetComponent implements OnInit {
