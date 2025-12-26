@@ -22,7 +22,6 @@ export class TaskListWidgetComponent implements OnInit {
   tasks = signal<Task[]>(this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || []);
 
   constructor() {
-    // Watch for storage changes and update signal
     effect(() => {
       const stored = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY);
       if (stored) {
@@ -44,7 +43,6 @@ export class TaskListWidgetComponent implements OnInit {
         setTimeout(() => {
           this.syncTaskUseCase.execute().subscribe({
             next: () => {
-              // Refresh tasks from storage after sync
               const updated = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
               this.tasks.set(updated);
               console.log('Background sync completed');
@@ -59,7 +57,6 @@ export class TaskListWidgetComponent implements OnInit {
     if (isOnline) {
       this.syncTaskUseCase.execute().subscribe({
         next: () => {
-          // Refresh tasks from storage after initial load
           const updated = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
           this.tasks.set(updated);
           console.log('Initial tasks loaded from API');
@@ -72,7 +69,6 @@ export class TaskListWidgetComponent implements OnInit {
   handleToggle(id: string) {
     this.toggleTaskUseCase.execute(id).subscribe({
       next: () => {
-        // Refresh tasks from storage after toggle
         const updated = this.storage.getItem<Task[]>(TASKS_STORAGE_KEY) || [];
         this.tasks.set(updated);
         console.log('Task toggled successfully:', id);
