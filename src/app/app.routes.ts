@@ -13,6 +13,7 @@ export const routes: Routes = [
           import('@/presentation/pages/login-page/login-page.component').then(
             (m) => m.LoginPageComponent
           ),
+        data: { title: 'Login' },
       },
     ],
   },
@@ -21,11 +22,20 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       {
+        path: '',
+        loadComponent: () =>
+          import('@/presentation/pages/dashboard-page/dashboard-page.component').then(
+            (m) => m.DashboardPageComponent
+          ),
+        data: { title: 'Dashboard' },
+      },
+      {
         path: 'tasks',
         loadComponent: () =>
           import('@/presentation/pages/tasks-page/tasks-page.component').then(
             (m) => m.TasksPageComponent
           ),
+        data: { title: 'Tasks' },
       },
       {
         path: 'settings',
@@ -33,6 +43,7 @@ export const routes: Routes = [
           import('@/presentation/pages/settings-page/settings-page.component').then(
             (m) => m.SettingsPageComponent
           ),
+        data: { title: 'Settings' },
       },
       {
         path: 'test',
@@ -40,13 +51,15 @@ export const routes: Routes = [
           import('@/presentation/pages/test-page/test-page.component').then(
             (m) => m.TestPageComponent
           ),
+        data: { title: 'Test' },
       },
 
     ],
   },
   {
     path: '',
-    redirectTo: 'dashboard/tasks',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
+    data: { title: 'Home' },
   },
 ];
