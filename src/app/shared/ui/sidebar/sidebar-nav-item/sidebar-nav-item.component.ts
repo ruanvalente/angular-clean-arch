@@ -1,11 +1,11 @@
 import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-sidebar-nav-item',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule],
   templateUrl: './sidebar-nav-item.component.html',
 })
 export class SidebarNavItemComponent {

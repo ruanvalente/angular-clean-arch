@@ -1,5 +1,5 @@
 import { Component, signal, effect, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { StorageRepository } from '@/core/repositories/storage.repository';
 import { SidebarNavItemComponent } from './sidebar-nav-item/sidebar-nav-item.component';
@@ -7,7 +7,7 @@ import { SidebarNavItemComponent } from './sidebar-nav-item/sidebar-nav-item.com
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarNavItemComponent],
+  imports: [RouterModule, SidebarNavItemComponent],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {

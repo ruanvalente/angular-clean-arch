@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, input, output, signal } from '@angular/core';
 
 import { Task } from '@/core/models/task.model';
@@ -7,7 +7,7 @@ import { TaskItemComponent } from '@/presentation/tasks/ui/task-item/task-item.c
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule, TaskItemComponent],
+  imports: [TaskItemComponent],
   templateUrl: './pagination.component.html',
 })
 export class PaginationComponent {

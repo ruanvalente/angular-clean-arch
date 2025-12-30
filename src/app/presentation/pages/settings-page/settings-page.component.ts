@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-settings-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './settings-page.component.html',
 })
 export class SettingsPageComponent {}
