@@ -17,9 +17,10 @@ export class SidebarComponent {
   isOpen = signal<boolean>(this.getSidebarStateFromStorage());
 
   navItems = [
-    { label: 'Tarefas', icon: '✓', route: 'tasks' },
-    { label: 'Configurações', icon: '⚙', route: 'settings' },
-    { label: 'Teste', icon: '🧪', route: 'test' },
+    { label: 'Dashboard', icon: '🏠', route: '' },
+    { label: 'Tasks', icon: '✓', route: 'tasks' },
+    { label: 'Configurations', icon: '⚙', route: 'settings' },
+    { label: 'Testings', icon: '🧪', route: 'test' },
   ];
 
   constructor() {
