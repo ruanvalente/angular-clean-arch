@@ -1,4 +1,3 @@
-
 import { Component, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
@@ -16,21 +15,17 @@ interface User {
 })
 export class HeaderComponent {
   user = signal<User>({
-    name: 'João Silva',
-    avatar: 'https://ui-avatars.com/api/?name=Joao+Silva&background=3b82f6&color=fff',
+    name: 'Ruan Valente',
+    avatar:
+      'https://avatars.githubusercontent.com/u/6674232?s=400&u=62eb573c8af66e882bbf633187e0f247714d30ec&v=4',
   });
 
   showMenu = signal<boolean>(false);
   private _title = signal('My System');
   title = this._title.asReadonly();
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
+  constructor(private router: Router, private route: ActivatedRoute) {
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       let current = this.route.firstChild;
 
       while (current?.firstChild) {
