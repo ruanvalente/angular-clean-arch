@@ -1,4 +1,4 @@
-import { TaskListWidgetComponent } from '@/presentation/tasks/widgets/task-list-widget/task-list-widget.component';
+import { TaskListWidgetComponent } from '@/presentation/features/tasks/widgets/task-list-widget/task-list-widget.component';
 import { Component } from '@angular/core';
 
 @Component({

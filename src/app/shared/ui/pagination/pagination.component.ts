@@ -1,8 +1,7 @@
-
 import { Component, computed, effect, input, output, signal } from '@angular/core';
 
 import { Task } from '@/core/models/task.model';
-import { TaskItemComponent } from '@/presentation/tasks/ui/task-item/task-item.component';
+import { TaskItemComponent } from '@/presentation/features/tasks/ui/task-item/task-item.component';
 
 @Component({
   selector: 'app-pagination',
