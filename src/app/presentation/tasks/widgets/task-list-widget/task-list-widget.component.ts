@@ -3,7 +3,7 @@ import { StorageRepository } from '@/core/repositories/storage.repository';
 import { SyncTasksUseCase } from '@/core/use-cases/tasks/sync-tasks.usecase';
 import { ToggleTaskUseCase } from '@/core/use-cases/tasks/toggle-task.usecase';
 import { PaginationComponent } from '@/shared/ui/pagination/pagination.component';
-import { CommonModule } from '@angular/common';
+
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 
 const TASKS_STORAGE_KEY = 'app_tasks';
@@ -11,7 +11,7 @@ const TASKS_STORAGE_KEY = 'app_tasks';
 @Component({
   selector: 'app-task-list-widget',
   standalone: true,
-  imports: [CommonModule, PaginationComponent],
+  imports: [PaginationComponent],
   templateUrl: './task-list-widget.component.html',
 })
 export class TaskListWidgetComponent implements OnInit {
