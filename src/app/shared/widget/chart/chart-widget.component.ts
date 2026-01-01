@@ -1,7 +1,7 @@
-import { Component, Input, OnChanges, SimpleChanges, Inject, PLATFORM_ID } from '@angular/core';
-import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartData, ChartType, ChartOptions } from 'chart.js';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, computed, Inject, input, PLATFORM_ID } from '@angular/core';
+import { ChartConfiguration, ChartData, ChartOptions, ChartType } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-chart-widget',
@@ -9,32 +9,19 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
   imports: [CommonModule, BaseChartDirective],
   templateUrl: './chart-widget.component.html',
 })
-export class ChartWidgetComponent implements OnChanges {
-  @Input() type: ChartType = 'line';
-  @Input() data!: ChartData;
-  @Input() options?: ChartOptions;
-  @Input() height: string = '100%';
+export class ChartWidgetComponent {
+  type = input<ChartType>('line');
+  data = input.required<ChartData>();
+  options = input<ChartOptions>({});
+  height = input<string>('100%');
 
-  public chartType: ChartType = 'line';
-  public chartData: ChartData = { labels: [], datasets: [] };
-  public chartOptions: ChartConfiguration['options'];
+  public chartType = this.type;
+  public chartData = this.data;
 
-  public isBrowser: boolean;
+  public chartOptions = computed<ChartConfiguration['options']>(() => {
+    const chartType = this.type();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['type']) {
-      this.chartType = this.type;
-    }
-
-    if (changes['data']) {
-      this.chartData = this.data;
-    }
-
-    this.chartOptions = {
+    const defaultOptions: ChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -51,15 +38,21 @@ export class ChartWidgetComponent implements OnChanges {
         axis: 'x',
         intersect: false,
       },
-      scales:
-        this.type === 'bar' || this.type === 'line'
-          ? {
-              y: {
-                beginAtZero: true,
-              },
-            }
-          : {},
-      ...this.options,
+      scales: chartType === 'bar' || chartType === 'line'
+        ? {
+            y: {
+              beginAtZero: true,
+            },
+          }
+        : {},
     };
+
+    return { ...defaultOptions, ...this.options() };
+  });
+
+  public isBrowser: boolean;
+
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 }
