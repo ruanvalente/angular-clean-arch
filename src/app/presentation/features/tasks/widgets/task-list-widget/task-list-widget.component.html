@@ -5,6 +5,10 @@
     <p class="text-gray-300 text-sm mt-2">Adicione uma nova tarefa para começar</p>
   </div>
   } @else {
-  <app-pagination [items]="tasks()" [itemsPerPage]="10" (onToggle)="handleToggle($event)" />
+  <app-pagination [items]="tasks()" [itemsPerPage]="10" (pageChange)="onPageChange($event)">
+    <ng-template let-task>
+      <app-task-item [task]="task" class="mb-2"></app-task-item>
+    </ng-template>
+  </app-pagination>
   }
 </div>
