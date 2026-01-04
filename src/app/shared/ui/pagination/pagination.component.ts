@@ -1,112 +1,98 @@
-import { Component, computed, effect, input, output, signal } from '@angular/core';
-
-import { Task } from '@/core/models/task.model';
-import { TaskItemComponent } from '@/presentation/features/tasks/ui/task-item/task-item.component';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  computed,
+  ContentChild,
+  effect,
+  input,
+  output,
+  signal,
+  TemplateRef,
+} from '@angular/core';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [TaskItemComponent],
+  imports: [CommonModule],
   templateUrl: './pagination.component.html',
 })
-export class PaginationComponent {
-  items = input.required<Array<Task>>();
+export class PaginationComponent<T> {
+  items = input.required<T[]>();
   itemsPerPage = input<number>(10);
-  currentPage = output<number>();
-  onToggle = output<string>();
 
-  currentPageSignal = signal<number>(1);
-  totalPages = computed(() => {
-    return Math.ceil(this.items().length / this.itemsPerPage());
-  });
+  pageChange = output<number>();
+
+  @ContentChild(TemplateRef)
+  itemTemplate!: TemplateRef<{ $implicit: T }>;
+
+  currentPage = signal(1);
+
+  totalPages = computed(() => Math.ceil(this.items().length / this.itemsPerPage()));
 
   paginatedItems = computed(() => {
-    const items = this.items();
-    const perPage = this.itemsPerPage();
-    const page = this.currentPageSignal();
-
-    if (!items || items.length === 0) {
-      return [];
-    }
-
-    const start = (page - 1) * perPage;
-    const end = start + perPage;
-    return items.slice(start, end);
+    const start = (this.currentPage() - 1) * this.itemsPerPage();
+    const end = start + this.itemsPerPage();
+    return this.items().slice(start, end);
   });
 
-  firstItemIndex = computed(() => {
-    return (this.currentPageSignal() - 1) * this.itemsPerPage() + 1;
-  });
+  firstItemIndex = computed(() => (this.currentPage() - 1) * this.itemsPerPage() + 1);
 
-  lastItemIndex = computed(() => {
-    return Math.min(this.currentPageSignal() * this.itemsPerPage(), this.items().length);
-  });
+  lastItemIndex = computed(() =>
+    Math.min(this.currentPage() * this.itemsPerPage(), this.items().length)
+  );
 
   constructor() {
     effect(() => {
-      const currentPage = this.currentPageSignal();
-      this.currentPage.emit(currentPage);
+      this.pageChange.emit(this.currentPage());
     });
   }
 
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages()) {
-      this.currentPageSignal.set(page);
+      this.currentPage.set(page);
     }
   }
 
   nextPage() {
-    const nextPage = this.currentPageSignal() + 1;
-    if (nextPage <= this.totalPages()) {
-      this.currentPageSignal.set(nextPage);
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update((p) => p + 1);
     }
   }
 
   previousPage() {
-    const prevPage = this.currentPageSignal() - 1;
-    if (prevPage >= 1) {
-      this.currentPageSignal.set(prevPage);
+    if (this.currentPage() > 1) {
+      this.currentPage.update((p) => p - 1);
     }
   }
 
-  get canGoNext(): boolean {
-    return this.currentPageSignal() < this.totalPages();
+  get canGoNext() {
+    return this.currentPage() < this.totalPages();
   }
 
-  get canGoPrevious(): boolean {
-    return this.currentPageSignal() > 1;
+  get canGoPrevious() {
+    return this.currentPage() > 1;
   }
 
   getPageNumbers(): number[] {
     const total = this.totalPages();
-    const current = this.currentPageSignal();
+    const current = this.currentPage();
     const pages: number[] = [];
 
-    const startPage = Math.max(1, current - 2);
-    const endPage = Math.min(total, current + 2);
+    const start = Math.max(1, current - 2);
+    const end = Math.min(total, current + 2);
 
-    if (startPage > 1) {
+    if (start > 1) {
       pages.push(1);
-      if (startPage > 2) {
-        pages.push(-1);
-      }
+      if (start > 2) pages.push(-1);
     }
 
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
+    for (let i = start; i <= end; i++) pages.push(i);
 
-    if (endPage < total) {
-      if (endPage < total - 1) {
-        pages.push(-1);
-      }
+    if (end < total) {
+      if (end < total - 1) pages.push(-1);
       pages.push(total);
     }
 
     return pages;
-  }
-
-  handleToggle(id: string) {
-    this.onToggle.emit(id);
   }
 }

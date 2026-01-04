@@ -5,13 +5,14 @@ import { ToggleTaskUseCase } from '@/core/use-cases/tasks/toggle-task.usecase';
 import { PaginationComponent } from '@/shared/ui/pagination/pagination.component';
 
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { TaskItemComponent } from '../../ui/task-item/task-item.component';
 
 const TASKS_STORAGE_KEY = 'app_tasks';
 
 @Component({
   selector: 'app-task-list-widget',
   standalone: true,
-  imports: [PaginationComponent],
+  imports: [PaginationComponent, TaskItemComponent],
   templateUrl: './task-list-widget.component.html',
 })
 export class TaskListWidgetComponent implements OnInit {
@@ -75,5 +76,9 @@ export class TaskListWidgetComponent implements OnInit {
       },
       error: (err) => console.error('Toggle error:', err),
     });
+  }
+
+  onPageChange(page: number) {
+    console.log('Página atual:', page);
   }
 }
