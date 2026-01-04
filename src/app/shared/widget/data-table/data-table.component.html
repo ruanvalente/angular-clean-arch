@@ -120,10 +120,5 @@
 </app-pagination>
 
 @if (itemToDelete) {
-<app-confirm-modal
-  title="Excluir registro"
-  message="Tem certeza que deseja excluir este item?"
-  (confirm)="confirmDelete()"
-  (cancel)="itemToDelete = null"
-/>
+<app-confirm-modal (confirm)="confirmDelete()" (cancel)="itemToDelete = null" />
 }
