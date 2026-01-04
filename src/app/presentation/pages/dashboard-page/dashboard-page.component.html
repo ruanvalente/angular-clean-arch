@@ -254,4 +254,25 @@
       </div>
     </div>
   </div>
+
+  <div class="mt-12">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-8 py-6 border-b border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-900">Data Table</h2>
+        <p class="mt-2 text-sm text-gray-600">
+          Data table example with pagination, edit and delete actions
+        </p>
+      </div>
+
+      <div class="p-8">
+        <app-data-table
+          [data]="dataTableExample"
+          [columns]="dataTableColumns"
+          (onEdit)="onEdit($event)"
+          (onDelete)="onDelete($event)"
+          [pageSizeOptions]="[5, 10, 20, 30]"
+        ></app-data-table>
+      </div>
+    </div>
+  </div>
 </div>
