@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { LineChartComponent } from '@/shared/ui/chart/line/line-chart.component';
 import { BarChartComponent } from '@/shared/ui/chart/bar/bar-chart.component';
 import { DataTableComponent } from '@/shared/widget/data-table/data-table.component';
-import { PaginationComponent } from '@/shared/ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-dashboard-page',
   templateUrl: './dashboard-page.component.html',
-  imports: [LineChartComponent, BarChartComponent, DataTableComponent, PaginationComponent],
+  imports: [LineChartComponent, BarChartComponent, DataTableComponent],
 })
 export class DashboardPageComponent {
   readonly dataTableExample = [
