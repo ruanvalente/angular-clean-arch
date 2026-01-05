@@ -1,5 +1,11 @@
-import { Component, signal, effect, inject } from '@angular/core';
-
+import {
+  Component,
+  signal,
+  effect,
+  inject,
+  afterNextRender,
+  OnDestroy
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { StorageRepository } from '@/core/repositories/storage.repository';
 import { SidebarNavItemComponent } from './sidebar-nav-item/sidebar-nav-item.component';
@@ -10,11 +16,15 @@ import { SidebarNavItemComponent } from './sidebar-nav-item/sidebar-nav-item.com
   imports: [RouterModule, SidebarNavItemComponent],
   templateUrl: './sidebar.component.html',
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnDestroy {
   private readonly SIDEBAR_KEY = 'sidebarOpen';
   private readonly storageRepository = inject(StorageRepository);
 
-  isOpen = signal<boolean>(this.getSidebarStateFromStorage());
+  private mediaQuery?: MediaQueryList;
+  private readonly BREAKPOINT = '(max-width: 767px)';
+
+  isMobile = signal<boolean>(false);
+  isOpen = signal<boolean>(true);
 
   navItems = [
     { label: 'Dashboard', icon: '🏠', route: '' },
@@ -23,10 +33,36 @@ export class SidebarComponent {
     { label: 'Testings', icon: '🧪', route: 'test' },
   ];
 
+
   constructor() {
+    afterNextRender(() => {
+      this.mediaQuery = window.matchMedia(this.BREAKPOINT);
+
+      this.isMobile.set(this.mediaQuery.matches);
+      this.isOpen.set(
+        this.isMobile()
+          ? false
+          : this.getSidebarStateFromStorage()
+      );
+
+      this.mediaQuery.addEventListener('change', (event) => {
+        this.isMobile.set(event.matches);
+      });
+    });
+
     effect(() => {
-      const isOpenState = this.isOpen();
-      this.storageRepository.setItem<boolean>(this.SIDEBAR_KEY, isOpenState);
+      if (this.isMobile()) {
+        this.isOpen.set(false);
+      }
+    });
+
+    effect(() => {
+      if (!this.isMobile()) {
+        this.storageRepository.setItem<boolean>(
+          this.SIDEBAR_KEY,
+          this.isOpen()
+        );
+      }
     });
   }
 
@@ -37,5 +73,9 @@ export class SidebarComponent {
   private getSidebarStateFromStorage(): boolean {
     const stored = this.storageRepository.getItem<boolean>(this.SIDEBAR_KEY);
     return stored === null ? true : stored;
+  }
+
+  ngOnDestroy() {
+    this.mediaQuery?.removeEventListener('change', () => {});
   }
 }
