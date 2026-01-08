@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ThemeService } from '@/shared/themes/theme.service';
+import { Component, inject } from '@angular/core';
 
 
 @Component({
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './settings-page.component.html',
 })
-export class SettingsPageComponent {}
+export class SettingsPageComponent {
+  readonly themeService = inject(ThemeService);
+
+}
